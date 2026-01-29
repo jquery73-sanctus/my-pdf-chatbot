@@ -1,8 +1,9 @@
 streamlit
-langchain>=0.1.0
+langchain
 langchain-openai
 langchain-community
 langchain-text-splitters
 pypdf
 faiss-cpu
+
 
