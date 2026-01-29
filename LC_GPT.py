@@ -4,7 +4,7 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_community.vectorstores import FAISS
-from langchain.chains import RetrievalQA
+from langchain.chains.retrieval_qa.base import RetrievalQA
 from langchain_community.callbacks import get_openai_callback
 
 # 1. GUI 화면 설정
@@ -80,4 +80,5 @@ if uploaded_file and openai_key:
                 st.session_state.messages.append({"role": "assistant", "content": response})
 
 elif not openai_key:
+
     st.warning("👈 왼쪽 사이드바에 OpenAI API Key를 입력해 주세요.")
