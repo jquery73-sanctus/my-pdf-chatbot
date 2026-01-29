@@ -4,6 +4,7 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_community.vectorstores import FAISS
+# 에러 방지를 위해 경로를 최신 버전으로 지정
 from langchain.chains.retrieval_qa.base import RetrievalQA
 from langchain_community.callbacks import get_openai_callback
 
@@ -50,7 +51,6 @@ if uploaded_file and openai_key:
     st.success("✅ PDF 분석 완료! 이제 대화를 시작하세요.")
 
     # 3. 채팅 UI 표시
-    # 기존 대화 내용 표시
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
@@ -64,21 +64,21 @@ if uploaded_file and openai_key:
         # AI 답변 생성 및 토큰 추적
         with st.chat_message("assistant"):
             with get_openai_callback() as cb:
-                response = qa_chain.run(prompt)
+                # 최신 권장 방식인 invoke 사용
+                result = qa_chain.invoke(prompt)
+                response = result['result'] # 결과 딕셔너리에서 답변만 추출
                 
-                # 답변 출력
                 st.markdown(response)
                 
-                # 토큰 사용량 정보 출력
+                # 토큰 사용량 및 비용 정보 출력
                 st.info(f"""
                 **💰 이번 질문의 비용 영수증:**
                 - 사용된 총 토큰: {cb.total_tokens}
                 - 상세: (입력 {cb.prompt_tokens} / 출력 {cb.completion_tokens})
-                - 예상 비용: ${cb.total_cost:.5f} (약 {cb.total_cost * 1350:.2f}원)
+                - 예상 비용: ${cb.total_cost:.5f} (약 {cb.total_cost * 1400:.2f}원)
                 """)
                 
                 st.session_state.messages.append({"role": "assistant", "content": response})
 
 elif not openai_key:
-
     st.warning("👈 왼쪽 사이드바에 OpenAI API Key를 입력해 주세요.")
